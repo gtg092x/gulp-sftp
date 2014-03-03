@@ -1,0 +1,44 @@
+{
+  "name": "gulp-sftp",
+  "version": "0.0.1",
+  "description": "Upload files to via SSH",
+  "license": "MIT",
+  "repository": "gtg092x/gulp-sftp",
+  "author": {
+    "name": "Matthew Drake",
+    "email": "mdrake@mediadrake.com",
+    "url": "http://mediadrake.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "sftp",
+    "jsftp",
+    "file",
+    "files",
+    "transfer",
+    "protocol",
+    "server",
+    "client",
+    "upload",
+    "deploy",
+    "deployment"
+  ],
+  "dependencies": {
+    "gulp-util": "~2.2.0",
+    "through2": "~0.4.0",
+    "parents": "0.0.2",
+    "ssh2":"~0.2.18"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
