@@ -36,7 +36,8 @@
     "gulp-util": "~2.2.0",
     "through2": "~0.4.0",
     "parents": "0.0.2",
-    "ssh2":"~0.2.18"
+    "ssh2": "~0.2.18",
+    "async": "^0.7.0"
   },
   "devDependencies": {
     "mocha": "*"
