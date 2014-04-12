@@ -1,4 +1,4 @@
-# [gulp](https://github.com/wearefractal/gulp)-ftp [![Build Status](https://secure.travis-ci.org/sindresorhus/gulp-ftp.png?branch=master)](http://travis-ci.org/sindresorhus/gulp-ftp)
+# [gulp](https://github.com/wearefractal/gulp)-sftp [![Build Status](https://secure.travis-ci.org/sindresorhus/gulp-ftp.png?branch=master)](http://travis-ci.org/sindresorhus/gulp-ftp)
 
 > Upload files to via SSH
 
