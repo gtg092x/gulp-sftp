@@ -49,13 +49,16 @@ module.exports = function (options) {
 				});
 				
 				// create directories
-				var dirname=path.dirname(finalRemotePath);
+				var dirname=path.dirname(finalRemotePath);				
 				sftp.mkdir(dirname, {mode: '0755'}, function(err){
 					if(err){
 						gutil.log('SFTP error or directory exists:', gutil.colors.red(err));
 					}else{
 						gutil.log('SFTP Created:', gutil.colors.green(dirname));
 					}
+				});
+				sftp.stat(dirname,function(err){
+					
 				});
 
 				var stream = sftp.createWriteStream(finalRemotePath,{ 
