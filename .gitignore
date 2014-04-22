@@ -26,3 +26,4 @@ coverage
 build/Release
 
 test.js
+gulpfile.js

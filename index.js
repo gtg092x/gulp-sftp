@@ -3,7 +3,8 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var Connection = require('ssh2');
-
+var async = require('async');
+var parents = require('parents');
 
 module.exports = function (options) {
 	if (options.host === undefined) {
@@ -13,6 +14,7 @@ module.exports = function (options) {
 	var fileCount = 0;
 	var remotePath = options.remotePath || '';
 	var localPath = options.localPath || '';
+	var separator = options.separator || '/';
 	var logFiles = options.logFiles === false ? false : true;
 
 	delete options.remotePath;
@@ -36,7 +38,7 @@ module.exports = function (options) {
 		var localRelativePath = file.path.replace(path.join(fileBase, localPath), '');
 		var finalRemotePath = path.join('/', remotePath, localRelativePath);
 		
-		//MDRAKE: TODO pool requests into single connection
+		// MDRAKE: TODO pool requests into single connection
 		var c = new Connection();
 		c.on('ready', function() {
 
@@ -48,26 +50,18 @@ module.exports = function (options) {
 					console.log('SFTP :: SFTP session closed');
 				});
 				
-				// create directories
-				var dirname=path.dirname(finalRemotePath);				
-				sftp.mkdir(dirname, {mode: '0755'}, function(err){
-					if(err){
-						gutil.log('SFTP error or directory exists:', gutil.colors.red(err));
-					}else{
-						gutil.log('SFTP Created:', gutil.colors.green(dirname));
-					}
-				});
-				sftp.stat(dirname,function(err){
-					
-				});
-
+				
+				
+				
+				
+				
 				var stream = sftp.createWriteStream(finalRemotePath,{ 
 					flags: 'w',
 					encoding: null,
 					mode: '0666',
 					autoClose: true
 				});
-				stream.write();
+				// stream.write();
 				
 				stream.on('close', function(err) {
 					
@@ -86,11 +80,43 @@ module.exports = function (options) {
 					sftp.end();
 					return c.end();
 				});
-				stream.end(file.contents);
+				
+				// create directories
+				var dirname=path.dirname(finalRemotePath);				
+				var fileDirs = parents(dirname);
+				
+				fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length});
+				
+				async.doWhilst(function(next){
+					
+					var d= fileDirs.pop();
+					
+					sftp.mkdir(d, {mode: '0755'}, function(err){
+						
+						if(err){
+							gutil.log('SFTP error or directory exists:', gutil.colors.red(err));
+						}else{
+							gutil.log('SFTP Created:', gutil.colors.green(dirname));
+						}
+						next();
+					});
+				},function(){
+					return fileDirs && fileDirs.length;
+				},function(){
+					
+					stream.write();
+					stream.end(file.contents);
+				});
+				
+					
+					
+		
+				
+				
 				
 			});
 		});
-		c.on('error', function(err) {			
+		c.on('error', function(err) {
 			this.emit('error', new gutil.PluginError('gulp-sftp', err));
 			return cb(err);
 		});
