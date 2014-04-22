@@ -2,3 +2,4 @@ node_modules
 ./fixture
 .idea
 .project
+.settings

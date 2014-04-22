@@ -67,7 +67,7 @@ module.exports = function (options) {
 				stream.write();
 				
 				stream.on('close', function(err) {
-					console.log('FINISH');
+					
 					if(err)
 						this.emit('error', new gutil.PluginError('gulp-sftp', err));
 					else{
