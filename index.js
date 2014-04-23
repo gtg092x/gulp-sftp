@@ -114,7 +114,7 @@ module.exports = function (options) {
 						return c.end();
 					});
 					
-					stream.write();
+
 					stream.end(file.contents);
 				});//async.whilst
 				
