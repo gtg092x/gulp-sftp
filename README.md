@@ -2,8 +2,9 @@
 
 > Upload files via SSH
 
-Useful for uploading and deploying things.
+Useful for uploading and deploying things via sftp. Right now this plugin just uploads everything. Caching and hash comparison are two TODO items.  
 
+[![NPM](https://nodei.co/npm/gulp-sftp.png?downloads=true&stars=true)](https://nodei.co/npm/gulp-sftp/)
 
 ## Install
 
@@ -31,7 +32,7 @@ gulp.task('default', function () {
 
 ## API
 
-### ftp(options)
+### sftp(options)
 
 #### options.host
 
@@ -58,9 +59,7 @@ Default: `'@anonymous'`
 Type: `String`  
 Default: `'/'`
 
-The remote path to upload too.
-
-Doesn't have to exist as [jsftp-mkdirp](https://github.com/sindresorhus/jsftp-mkdirp) is used.
+The remote path to upload too. This path should exist, though the child directories that house your files do not need to.
 
 
 ## License

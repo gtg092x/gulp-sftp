@@ -13,7 +13,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    
   },
   "files": [
     "index.js"
@@ -40,6 +40,6 @@
     "async": "^0.7.0"
   },
   "devDependencies": {
-    "mocha": "*"
+    
   }
 }
