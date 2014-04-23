@@ -114,7 +114,6 @@ module.exports = function (options) {
 						return c.end();
 					});
 					
-
 					stream.end(file.contents);
 				});//async.whilst
 				

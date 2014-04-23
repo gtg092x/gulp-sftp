@@ -64,4 +64,4 @@ The remote path to upload too. This path should exist, though the child director
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)
+[MIT](http://opensource.org/licenses/MIT)
