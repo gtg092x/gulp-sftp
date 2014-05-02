@@ -56,7 +56,7 @@ Default: `'@anonymous'`
 
 If this option is not set, gulp-sftp assumes the user is using private key authentication and will default to using keys at the following locations:
 
-	`~/.ssh/id_dsa` and `/.ssh/id_rsa`
+`~/.ssh/id_dsa` and `/.ssh/id_rsa`
 
 #### options.remotePath
 
