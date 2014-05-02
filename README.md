@@ -85,7 +85,7 @@ A passphrase for secret key authentication. Leave blank if your key does not nee
 type `String`
 Default: `null`
 
-If you wish to pass the key directly through gulp, you can do so by setting it to options.keyContents. This isn't very secure, however, and is strongly discouraged.
+If you wish to pass the key directly through gulp, you can do so by setting it to options.keyContents.
 
 #### options.auth
 
