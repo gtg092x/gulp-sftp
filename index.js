@@ -1,6 +1,8 @@
 'use strict';
 var path = require('path');
+var fs = require('fs');
 var gutil = require('gulp-util');
+var util = require('util');
 var through = require('through2');
 var Connection = require('ssh2');
 var async = require('async');
@@ -11,15 +13,94 @@ module.exports = function (options) {
 	if (options.host === undefined) {
 		throw new gutil.PluginError('gulp-sftp', '`host` required.');
 	}
+	
+	
 
 	var fileCount = 0;
 	var remotePath = options.remotePath || '/';
 	var localPath = options.localPath || '';
-	var separator = options.separator || '/';
+	
+	options.authKey = options.authKey||options.auth;
+	
+	var authFile=path.join(__dirname,'.ftppass');
+	if(options.authKey && fs.existsSync(authFile)){
+		var auth = JSON.parse(fs.readFileSync(authFile,'utf8'))[options.authKey];
+		if(!auth)
+			this.emit('error', new gutil.PluginError('gulp-sftp', 'Could not find authkey in .ftppass'));
+		for (var attr in auth) { options[attr] = auth[attr]; }
+	}
+	
+	//option aliases
+	options.password = options.password||options.pass;
+	options.username = options.username||options.user;
+	
+	/*
+	 * Lots of ways to present key info
+	 */
+	var key = options.key || options.keyLocation || null;
+	if(key&&typeof key == "string")
+		key = {location:key};
+	
+	//check for other options that imply a key or if there is no password
+	if(!key && (options.passphrase||options.keyContents||!options.password)){
+		key = {};		
+	}
+	
+	if(key){		
+		
+		//aliases
+		key.contents=key.contents||options.keyContents;
+		key.passphrase=key.passphrase||options.passphrase;
+		
+		//defaults
+		key.location=key.location||["~/.ssh/id_rsa","/.ssh/id_rsa","~/.ssh/id_dsa","/.ssh/id_dsa"];
+		
+		//type normalization
+		if(!util.isArray(key.location))
+			key.location=[key.location];
+		
+		//resolve all home paths
+		if(key.location){
+			var home = process.env.HOME||process.env.USERPROFILE;
+			for(var i=0;i<key.location.length;i++)
+			if (key.location[i].substr(0,2) === '~/')
+				key.location[i] = path.resolve(home,key.location[i].replace(/^~\//,""));
+		
+
+			for(var i=0,keyPath;keyPath=key.location[i++];){	
+				
+				
+				if(fs.existsSync(keyPath)){
+					key.contents = fs.readFileSync(keyPath);		
+					break;
+				}
+			}
+		}else if(!key.contents){
+			this.emit('error', new gutil.PluginError('gulp-sftp', 'Cannot find RSA key, searched: '+key.location.join(', ')));
+		}
+		
+			
+		
+	}
+	/*
+	 * End Key normalization, key should now be of form:
+	 * {location:Array,passphrase:String,contents:String}
+	 * or null
+	 */
+	
+	if(options.password){
+		gutil.log('Authenticating with password.');
+	}else if(key){			
+		gutil.log('Authenticating with private key.');		
+	}
+	
+	//var separator = options.separator || '/';
 	var logFiles = options.logFiles === false ? false : true;
 
 	delete options.remotePath;
 	delete options.localPath;
+	delete options.user;
+	delete options.pass;
 	delete options.logFiles;
 	
 	var mkDirCache = {};
@@ -80,7 +161,7 @@ module.exports = function (options) {
 						
 						if(err){
 							//assuming that the directory exists here, silencing this error
-							gutil.log('SFTP error or directory exists:', gutil.colors.red(err));
+							gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
 						}else{
 							gutil.log('SFTP Created:', gutil.colors.green(dirname));
 						}
@@ -131,12 +212,27 @@ module.exports = function (options) {
 		c.on('close', function(had_error) {
 			return cb(had_error);
 		});
-		c.connect({
-			host : options.host,
-			port : options.port,
-			username : options.user,
-			password : options.pass
-		});
+		
+		
+		/*
+		 * connection options, may be a key
+		 */
+		var connection_options = {
+				host : options.host,
+				port : options.port,
+				username : options.username
+		};
+		if(options.password){			
+			connection_options.password = options.password;
+		}else if(key){
+			connection_options.privateKey = key.contents;
+			connection_options.passphrase = key.passphrase;
+		}
+		
+		c.connect(connection_options);
+		/*
+		 * end connection options
+		 */
 		
 		this.push(file);
 
