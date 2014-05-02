@@ -22,7 +22,7 @@ module.exports = function (options) {
 	
 	options.authKey = options.authKey||options.auth;
 	
-	var authFile=path.join(__dirname,'.ftppass');
+	var authFile=path.join('./','.ftppass');
 	if(options.authKey && fs.existsSync(authFile)){
 		var auth = JSON.parse(fs.readFileSync(authFile,'utf8'))[options.authKey];
 		if(!auth)
