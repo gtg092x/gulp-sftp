@@ -92,7 +92,7 @@ If you wish to pass the key directly through gulp, you can do so by setting it t
 type `String`
 Default: `null`
 
-An identifier to access authentication information from `.ftppass` see [Authentication](#Authentication) for more information.
+An identifier to access authentication information from `.ftppass` see [Authentication](#authentication) for more information.
 
 
 ##Authentication
