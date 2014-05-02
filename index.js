@@ -32,7 +32,7 @@ module.exports = function (options) {
 	
 	//option aliases
 	options.password = options.password||options.pass;
-	options.username = options.username||options.user;
+	options.username = options.username||options.user||'anonymous';
 	
 	/*
 	 * Lots of ways to present key info
