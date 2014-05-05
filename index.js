@@ -8,6 +8,10 @@ var Connection = require('ssh2');
 var async = require('async');
 var parents = require('parents');
 
+var normalizePath = function(path){
+	return path.replace(/\\/g, '/');
+};
+
 //mdrake: TODO - support .key file including private key auth
 module.exports = function (options) {
 	if (options.host === undefined) {
@@ -120,7 +124,7 @@ module.exports = function (options) {
 		var relativePath = file.path.replace(file.cwd + '/', '');
 		var fileBase = file.base?path.resolve(file.base) : file.cwd;
 		var localRelativePath = file.path.replace(path.join(fileBase, localPath), '');
-		var finalRemotePath = path.join(remotePath, localRelativePath).replace(/\\/g, '/');
+		var finalRemotePath = normalizePath(path.join(remotePath, localRelativePath));
 		
 		
 		// MDRAKE: Would be nice - pool requests into single connection
@@ -144,7 +148,9 @@ module.exports = function (options) {
 				var dirname=path.dirname(finalRemotePath);
 				//get parents of the target dir
 				
-				var fileDirs = parents(dirname).map(function(d){return d.replace(/^\/~/,"~");});
+				var fileDirs = parents(dirname)
+					.map(function(d){return d.replace(/^\/~/,"~");})
+					.map(normalizePath);
 				//get filter out dirs that are closer to root than the base remote path
 				//also filter out any dirs made during this gulp session
 				fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length&&!mkDirCache[d];});
