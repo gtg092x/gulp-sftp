@@ -120,7 +120,7 @@ module.exports = function (options) {
 		var relativePath = file.path.replace(file.cwd + '/', '');
 		var fileBase = file.base?path.resolve(file.base) : file.cwd;
 		var localRelativePath = file.path.replace(path.join(fileBase, localPath), '');
-		var finalRemotePath = path.join(remotePath, localRelativePath);
+		var finalRemotePath = path.join(remotePath, localRelativePath).replace(/\\/g, '/');
 		
 		
 		// MDRAKE: Would be nice - pool requests into single connection
