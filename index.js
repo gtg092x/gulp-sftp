@@ -163,7 +163,8 @@ module.exports = function (options) {
 					var d= fileDirs.pop();
 					mkDirCache[d]=true;
 					//mdrake - TODO: use a default file permission instead of defaulting to 755 
-					sftp.mkdir(d, {mode: '0755'}, function(err){
+					
+					sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
 						
 						if(err){
 							//assuming that the directory exists here, silencing this error
@@ -175,7 +176,7 @@ module.exports = function (options) {
 					});
 				},function(){
 					
-					var stream = sftp.createWriteStream(finalRemotePath,{ 
+					var stream = sftp.createWriteStream(finalRemotePath,{//REMOTE PATH
 						flags: 'w',
 						encoding: null,
 						mode: '0666',
