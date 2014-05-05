@@ -175,7 +175,16 @@ module.exports = function (options) {
 						mode: '0666',
 						autoClose: true
 					});
-					// stream.write();
+					
+					var readStream = fs.createReadStream(fileBase+localRelativePath);
+					var uploadedBytes = 0;
+					
+					readStream.pipe(stream); // start upload
+					
+					readStream.on("data", function(chunk) {
+						uploadedBytes += chunk.length;
+						gutil.log(gutil.colors.green("uploaded "+uploadedBytes+" bytes"));
+					});
 					
 					stream.on('close', function(err) {
 						
@@ -195,7 +204,6 @@ module.exports = function (options) {
 						return c.end();
 					});
 					
-					stream.end(file.contents);
 				});//async.whilst
 				
 					
