@@ -99,7 +99,7 @@ An identifier to access authentication information from `.ftppass` see [Authenti
 
 ##Authentication
 
-For better security, save authentication data in a json formatted file named `.ftppass`
+For better security, save authentication data in a json formatted file named `.ftppass` and *be sure to add .ftpass to .gitignore*.
 
 ```js
 var gulp = require('gulp');
