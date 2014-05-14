@@ -96,10 +96,17 @@ Default: `null`
 
 An identifier to access authentication information from `.ftppass` see [Authentication](#authentication) for more information.
 
+#### options.authFile
+
+type `String`
+Default: `.ftppass`
+
+A path relaitve to the project root to a JSON formatted file containing auth information.
+
 
 ##Authentication
 
-For better security, save authentication data in a json formatted file named `.ftppass` and **be sure to add .ftppass to .gitignore**.
+For better security, save authentication data in a json formatted file named `.ftppass` (or to whatever value you set options.authFile to). **Be sure to add this file to .gitignore**. You do not typically want auth information stored in version control.
 
 ```js
 var gulp = require('gulp');
