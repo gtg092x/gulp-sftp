@@ -8,6 +8,7 @@ var Connection = require('ssh2');
 var async = require('async');
 var parents = require('parents');
 var Stream = require('stream');
+var assign = require('object-assign');
 
 var normalizePath = function(path){
 	return path.replace(/\\/g, '/');
@@ -15,7 +16,7 @@ var normalizePath = function(path){
 
 //mdrake: TODO - support .key file including private key auth
 module.exports = function (options) {
-
+    options = assign({}, options);// credit sindresorhus
 
 
 	if (options.host === undefined) {
@@ -195,7 +196,7 @@ module.exports = function (options) {
         //["cwd","path","base"].forEach(function(d){console.log(d,file[d]);});
         //console.log("FILE",finalRemotePath);
 		
-		// MDRAKE: Would be nice - pool requests into single connection
+		//connection pulled from pool
 		pool(function(sftp){
             /*
              *  Create Directories
@@ -267,10 +268,6 @@ module.exports = function (options) {
             });//async.whilst
         });
 								
-				
-
-				
-					
 
 		
 		this.push(file);

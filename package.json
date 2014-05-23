@@ -1,6 +1,6 @@
 {
   "name": "gulp-sftp",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Upload files via SSH",
   "license": "MIT",
   "repository": "gtg092x/gulp-sftp",
@@ -12,9 +12,7 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "scripts": {
-    
-  },
+  "scripts": {},
   "files": [
     "index.js"
   ],
@@ -36,9 +34,8 @@
     "through2": "~0.4.0",
     "parents": "0.0.2",
     "ssh2": "~0.2.18",
-    "async": "^0.7.0"
+    "async": "^0.7.0",
+    "object-assign": "~0.3.1"
   },
-  "devDependencies": {
-    
-  }
+  "devDependencies": {}
 }
