@@ -282,7 +282,7 @@ module.exports = function (options) {
 			gutil.log('gulp-sftp:', gutil.colors.yellow('No files uploaded'));
 		}
         if(sftpCache)
-        sftpCache.end();
+            sftpCache.end();
         if(connectionCache)
             connectionCache.end();
 		cb();
