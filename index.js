@@ -15,15 +15,16 @@ var normalizePath = function(path){
 
 //mdrake: TODO - support .key file including private key auth
 module.exports = function (options) {
+
+
+
 	if (options.host === undefined) {
 		throw new gutil.PluginError('gulp-sftp', '`host` required.');
 	}
-	
-	
 
 	var fileCount = 0;
 	var remotePath = options.remotePath || '/';
-	var localPath = options.localPath || '';
+
 	
 	options.authKey = options.authKey||options.auth;
 	var authFilePath = options.authFile || '.ftppass'; 
@@ -101,6 +102,7 @@ module.exports = function (options) {
 	
 	//var separator = options.separator || '/';
 	var logFiles = options.logFiles === false ? false : true;
+    var prependBase = options.prependBase === false ? false : true;
 
 	delete options.remotePath;
 	delete options.localPath;
@@ -119,11 +121,19 @@ module.exports = function (options) {
 
 
 		// have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
-		var relativeDir = path.relative(file.cwd , file.base||'./');
+
+		var relativeDir = null;
+        if(!prependBase)
+            relativeDir = path.relative(file.base , path.dirname(file.path)||'./')
+        else
+            relativeDir = path.relative(file.cwd , path.dirname(file.path)||'./')
+
         var fileName = path.basename(file.path);
         var relativePath = path.join(relativeDir,fileName);
 		var finalRemotePath = normalizePath(path.join(remotePath, relativePath));
 
+        //["cwd","path","base"].forEach(function(d){console.log(d,file[d]);});
+        //console.log("FILE",finalRemotePath);
 		
 		// MDRAKE: Would be nice - pool requests into single connection
 		var c = new Connection();
