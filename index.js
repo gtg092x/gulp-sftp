@@ -101,9 +101,9 @@ module.exports = function (options) {
 		gutil.log('Authenticating with private key.');		
 	}
 	
-	//var separator = options.separator || '/';
+
 	var logFiles = options.logFiles === false ? false : true;
-    var prependBase = options.prependBase === false ? false : true;
+
 
 	delete options.remotePath;
 	delete options.localPath;
@@ -183,12 +183,11 @@ module.exports = function (options) {
 
 		// have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
 
-		//var relativeDir = null;
+
 
 		var finalRemotePath = normalizePath(path.join(remotePath, file.relative));
 
-        ["cwd","path","base"].forEach(function(d){console.log(d,file[d]);});
-        console.log("FINALREMOTEPATH",finalRemotePath);
+
 		
 		//connection pulled from pool
 		pool(function(sftp){
