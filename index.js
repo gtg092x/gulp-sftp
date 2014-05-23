@@ -270,7 +270,7 @@ module.exports = function (options) {
                     uploadedBytes+=highWaterMark;
                     var p = Math.round((uploadedBytes/size)*100);
                     p = Math.min(100,p);
-                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",p+"%");
+                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",uploadedBytes+"kb");
                 });
 
 
