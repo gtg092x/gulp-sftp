@@ -268,7 +268,9 @@ module.exports = function (options) {
 
                 stream.on('drain',function(){
                     uploadedBytes+=highWaterMark;
-                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",Math.round((uploadedBytes/size)*100)+"%");
+                    var p = Math.round((uploadedBytes/size)*100);
+                    p = Math.min(100,p);
+                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",p+"%");
                 });
 
 
