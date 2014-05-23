@@ -67,28 +67,6 @@ Default: `'/'`
 
 The remote path to upload too. This path should exist, though the child directories that house your files do not need to.
 
-#### options.prependBase
-
-Type: `Boolean`
-Default: `false`
-
-When deciding what remote path to upload to, whether or not gulp-sftp should prepend the base directory relative to the gulp cwd.
-
-```js
-var gulp = require('gulp');
-var sftp = require('gulp-sftp');
-
-gulp.task('default', function () {
-	return gulp.src('src/*')
-	    .pipe(gulp.dest('./out'))
-		.pipe(sftp({
-			host: 'website.com',
-			remotePath:'/home/joe/',
-			prependBase:true //will upload files to /home/joe/out/
-		}));
-});
-```
-
 #### options.key
 
 type `String` or `Object`
