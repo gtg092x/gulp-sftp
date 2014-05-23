@@ -123,7 +123,7 @@ An identifier to access authentication information from `.ftppass` see [Authenti
 type `String`
 Default: `.ftppass`
 
-A path relaitve to the project root to a JSON formatted file containing auth information.
+A path relative to the project root to a JSON formatted file containing auth information.
 
 
 ##Authentication
