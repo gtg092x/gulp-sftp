@@ -183,17 +183,17 @@ module.exports = function (options) {
 						mode: '0666',
 						autoClose: true
 					});
-					
+
 					//var readStream = fs.createReadStream(fileBase+localRelativePath);
 
-                    //var readStream = new Buffer(file.contents); //issue #7 credit u01jmg3
-
+                    //issue #7 credit u01jmg3
                     // from http://stackoverflow.com/questions/12755997/how-to-create-streams-from-string-in-node-js
-                    // this feels so wrong
+                    // mdrake: I bet there's a vinyl readstream I can use, but it's not obvious
                     var readStream = new Stream.Readable();
                     readStream._read = function noop() {}; // redundant? see update below
                     readStream.push(file.contents);
                     readStream.push(null);
+
 
 					var uploadedBytes = 0;
 					
