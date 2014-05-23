@@ -112,6 +112,66 @@ module.exports = function (options) {
 	
 	var mkDirCache = {};
 
+    var sftpCache = null;//sftp connection cache
+    var connectionCache = null;//ssh connection cache
+
+    var pool = function(uploader){ // method to get cache or create connection
+
+        if(sftpCache)
+            return uploader(sftpCache);
+
+
+
+        var c = new Connection();
+        connectionCache = c;
+        c.on('ready', function() {
+
+            c.sftp(function(err, sftp) {
+                if (err)
+                    throw err;
+
+                sftp.on('end', function() {
+                    gutil.log('SFTP :: SFTP session closed');
+                });
+                sftpCache = sftp;
+                uploader(sftpCache);
+            });//c.sftp
+        });//c.on('ready')
+
+        c.on('error', function(err) {
+            this.emit('error', new gutil.PluginError('gulp-sftp', err));
+            return cb(err);
+        });
+        c.on('end', function() {
+            gutil.log('Connection :: end');
+        });
+        c.on('close', function(had_error) {
+            gutil.log('Connection :: close');
+        });
+
+
+        /*
+         * connection options, may be a key
+         */
+        var connection_options = {
+            host : options.host,
+            port : options.port,
+            username : options.username
+        };
+        if(options.password){
+            connection_options.password = options.password;
+        }else if(key){
+            connection_options.privateKey = key.contents;
+            connection_options.passphrase = key.passphrase;
+        }
+
+        c.connect(connection_options);
+        /*
+         * end connection options
+         */
+
+    };
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			this.push(file);
@@ -136,123 +196,82 @@ module.exports = function (options) {
         //console.log("FILE",finalRemotePath);
 		
 		// MDRAKE: Would be nice - pool requests into single connection
-		var c = new Connection();
-		c.on('ready', function() {
+		pool(function(sftp){
+            /*
+             *  Create Directories
+             */
 
-			c.sftp(function(err, sftp) {
-				if (err)
-					throw err;
+            //get dir name from file path
+            var dirname=path.dirname(finalRemotePath);
+            //get parents of the target dir
 
-				sftp.on('end', function() {
-					gutil.log('SFTP :: SFTP session closed');
-				});
+            var fileDirs = parents(dirname)
+                .map(function(d){return d.replace(/^\/~/,"~");})
+                .map(normalizePath);
+            //get filter out dirs that are closer to root than the base remote path
+            //also filter out any dirs made during this gulp session
+            fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length&&!mkDirCache[d];});
+
+            //while there are dirs to create, create them
+            //https://github.com/caolan/async#whilst - not the most commonly used async control flow
+            async.whilst(function(){
+                return fileDirs && fileDirs.length;
+            },function(next){
+                var d= fileDirs.pop();
+                mkDirCache[d]=true;
+                //mdrake - TODO: use a default file permission instead of defaulting to 755
+
+                sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
+
+                    if(err){
+                        //assuming that the directory exists here, silencing this error
+                        gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
+                    }else{
+                        gutil.log('SFTP Created:', gutil.colors.green(dirname));
+                    }
+                    next();
+                });
+            },function(){
+
+                var stream = sftp.createWriteStream(finalRemotePath,{//REMOTE PATH
+                    flags: 'w',
+                    encoding: null,
+                    mode: '0666',
+                    autoClose: true
+                });
+
+                //var readStream = fs.createReadStream(fileBase+localRelativePath);
+
+                //issue #7 credit u01jmg3
+                var uploadedBytes = 0;
+
+                file.pipe(stream); // start upload
+
+                stream.on('close', function(err) {
+
+                    if(err)
+                        this.emit('error', new gutil.PluginError('gulp-sftp', err));
+                    else{
+                        if (logFiles) {
+                            gutil.log('gulp-sftp:', gutil.colors.green('Uploaded: ') +
+                                relativePath +
+                                gutil.colors.green(' => ') +
+                                finalRemotePath);
+                        }
+
+                        fileCount++;
+                    }
+                    return cb(err);
+                });
+
+            });//async.whilst
+        });
 								
 				
-				/*
-				 *  Create Directories
-				 */
-				
-				//get dir name from file path
-				var dirname=path.dirname(finalRemotePath);
-				//get parents of the target dir
-				
-				var fileDirs = parents(dirname)
-					.map(function(d){return d.replace(/^\/~/,"~");})
-					.map(normalizePath);
-				//get filter out dirs that are closer to root than the base remote path
-				//also filter out any dirs made during this gulp session
-				fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length&&!mkDirCache[d];});
-				
-				//while there are dirs to create, create them
-				//https://github.com/caolan/async#whilst - not the most commonly used async control flow
-				async.whilst(function(){
-					return fileDirs && fileDirs.length;
-				},function(next){					
-					var d= fileDirs.pop();
-					mkDirCache[d]=true;
-					//mdrake - TODO: use a default file permission instead of defaulting to 755 
-					
-					sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
-						
-						if(err){
-							//assuming that the directory exists here, silencing this error
-							gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
-						}else{
-							gutil.log('SFTP Created:', gutil.colors.green(dirname));
-						}
-						next();
-					});
-				},function(){
-					
-					var stream = sftp.createWriteStream(finalRemotePath,{//REMOTE PATH
-						flags: 'w',
-						encoding: null,
-						mode: '0666',
-						autoClose: true
-					});
 
-					//var readStream = fs.createReadStream(fileBase+localRelativePath);
-
-                    //issue #7 credit u01jmg3
-                   	var uploadedBytes = 0;
-
-                    file.pipe(stream); // start upload
-
-					stream.on('close', function(err) {
-						
-						if(err)
-							this.emit('error', new gutil.PluginError('gulp-sftp', err));
-						else{
-							if (logFiles) {
-						          gutil.log('gulp-sftp:', gutil.colors.green('Uploaded: ') + 
-						                                 relativePath +
-						                                 gutil.colors.green(' => ') + 
-						                                 finalRemotePath);
-						        }
-
-							fileCount++;
-						}
-						sftp.end();
-						return c.end();
-					});
-					
-				});//async.whilst
 				
 					
-			});//c.sftp
-		});//c.on('ready')
-		
-		c.on('error', function(err) {
-			this.emit('error', new gutil.PluginError('gulp-sftp', err));
-			return cb(err);
-		});
-		c.on('end', function() {
-			gutil.log('Connection :: end');
-		});
-		c.on('close', function(had_error) {
-			return cb(had_error);
-		});
-		
-		
-		/*
-		 * connection options, may be a key
-		 */
-		var connection_options = {
-				host : options.host,
-				port : options.port,
-				username : options.username
-		};
-		if(options.password){			
-			connection_options.password = options.password;
-		}else if(key){
-			connection_options.privateKey = key.contents;
-			connection_options.passphrase = key.passphrase;
-		}
-		
-		c.connect(connection_options);
-		/*
-		 * end connection options
-		 */
+
 		
 		this.push(file);
 
@@ -262,7 +281,10 @@ module.exports = function (options) {
 		} else {
 			gutil.log('gulp-sftp:', gutil.colors.yellow('No files uploaded'));
 		}
-
+        if(sftpCache)
+        sftpCache.end();
+        if(connectionCache)
+            connectionCache.end();
 		cb();
 	});
 };
