@@ -154,7 +154,7 @@ module.exports = function (options) {
             gutil.log('Connection :: end');
         });
         c.on('close', function(had_error) {
-            gutil.log('Connection :: close',had_error);
+            gutil.log('Connection :: close',had_error!==false?"with error":"");
         });
 
 
@@ -247,8 +247,8 @@ module.exports = function (options) {
 
 
                 var highWaterMark = stream.highWaterMark||(16*1000);
-
-                if(file.isBuffer()&&file.stat.size>(200*1000)){
+                var size = file.stat.size;
+                if(file.isBuffer()&&size>(200*1000)){
                     //ssh2 seems to close sftp uploads if file is arbitrarily large
                     //convert to stream if file is over 200kb
                     var readableDecoy = new streamBuffers.ReadableStreamBuffer({
@@ -257,6 +257,9 @@ module.exports = function (options) {
                     });
                     readableDecoy.put(file.contents);
                     readableDecoy.pipe(stream); // start upload
+                    stream.on('close',function(){
+                        readableDecoy.destroy();
+                    });
                 }else{
 
                     file.pipe(stream); // start upload
@@ -265,7 +268,7 @@ module.exports = function (options) {
 
                 stream.on('drain',function(){
                     uploadedBytes+=highWaterMark;
-                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",(uploadedBytes/1000)+"kb");
+                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",Math.round((uploadedBytes/size)*100)+"%");
                 });
 
 
@@ -306,6 +309,7 @@ module.exports = function (options) {
             sftpCache.end();
         if(connectionCache)
             connectionCache.end();
+
 		cb();
 	});
 };
