@@ -9,6 +9,7 @@ var async = require('async');
 var parents = require('parents');
 var Stream = require('stream');
 var assign = require('object-assign');
+var streamBuffers= require('stream-buffers');
 
 var normalizePath = function(path){
 	return path.replace(/\\/g, '/');
@@ -113,6 +114,7 @@ module.exports = function (options) {
 	
 	var mkDirCache = {};
 
+    var finished=false;
     var sftpCache = null;//sftp connection cache
     var connectionCache = null;//ssh connection cache
 
@@ -133,7 +135,12 @@ module.exports = function (options) {
 
                 sftp.on('end', function() {
                     gutil.log('SFTP :: SFTP session closed');
+                    sftpCache=null;
+                    if(!finished)
+                    this.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
                 });
+
+
                 sftpCache = sftp;
                 uploader(sftpCache);
             });//c.sftp
@@ -141,13 +148,13 @@ module.exports = function (options) {
 
         c.on('error', function(err) {
             this.emit('error', new gutil.PluginError('gulp-sftp', err));
-            return cb(err);
+            //return cb(err);
         });
         c.on('end', function() {
             gutil.log('Connection :: end');
         });
         c.on('close', function(had_error) {
-            gutil.log('Connection :: close');
+            gutil.log('Connection :: close',had_error);
         });
 
 
@@ -236,10 +243,33 @@ module.exports = function (options) {
 
                 //var readStream = fs.createReadStream(fileBase+localRelativePath);
 
-                //issue #7 credit u01jmg3
                 var uploadedBytes = 0;
 
-                file.pipe(stream); // start upload
+
+                var highWaterMark = stream.highWaterMark||(16*1000);
+
+                if(file.isBuffer()&&file.stat.size>(200*1000)){
+                    //ssh2 seems to close sftp uploads if file is arbitrarily large
+                    //convert to stream if file is over 200kb
+                    var readableDecoy = new streamBuffers.ReadableStreamBuffer({
+                        frequency: 10,
+                        chunkSize: highWaterMark
+                    });
+                    readableDecoy.put(file.contents);
+                    readableDecoy.pipe(stream); // start upload
+                }else{
+
+                    file.pipe(stream); // start upload
+
+                }
+
+                stream.on('drain',function(){
+                    uploadedBytes+=highWaterMark;
+                    gutil.log('gulp-sftp:',finalRemotePath,"uploaded",(uploadedBytes/1000)+"kb");
+                });
+
+
+
 
                 stream.on('close', function(err) {
 
@@ -271,6 +301,7 @@ module.exports = function (options) {
 		} else {
 			gutil.log('gulp-sftp:', gutil.colors.yellow('No files uploaded'));
 		}
+        finished=true;
         if(sftpCache)
             sftpCache.end();
         if(connectionCache)
