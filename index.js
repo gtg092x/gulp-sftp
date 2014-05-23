@@ -116,17 +116,14 @@ module.exports = function (options) {
 			return cb();
 		}
 
-		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('gulp-sftp', 'Streaming not supported'));
-			return cb();
-		}
+
 
 		// have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
-		var relativePath = file.path.replace(file.cwd + '/', '');
-		var fileBase = file.base?path.resolve(file.base) : file.cwd;
-		var localRelativePath = file.path.replace(path.join(fileBase, localPath), '');
-		var finalRemotePath = normalizePath(path.join(remotePath, localRelativePath));
-		
+		var relativeDir = path.relative(file.cwd , file.base||'./');
+        var fileName = path.basename(file.path);
+        var relativePath = path.join(relativeDir,fileName);
+		var finalRemotePath = normalizePath(path.join(remotePath, relativePath));
+
 		
 		// MDRAKE: Would be nice - pool requests into single connection
 		var c = new Connection();
@@ -187,23 +184,10 @@ module.exports = function (options) {
 					//var readStream = fs.createReadStream(fileBase+localRelativePath);
 
                     //issue #7 credit u01jmg3
-                    // from http://stackoverflow.com/questions/12755997/how-to-create-streams-from-string-in-node-js
-                    // mdrake: I bet there's a vinyl readstream I can use, but it's not obvious
-                    var readStream = new Stream.Readable();
-                    readStream._read = function noop() {}; // redundant? see update below
-                    readStream.push(file.contents);
-                    readStream.push(null);
+                   	var uploadedBytes = 0;
 
+                    file.pipe(stream); // start upload
 
-					var uploadedBytes = 0;
-					
-					readStream.pipe(stream); // start upload
-					
-					readStream.on("data", function(chunk) {
-						uploadedBytes += chunk.length;
-						gutil.log(gutil.colors.green("uploaded "+uploadedBytes+" bytes"));
-					});
-					
 					stream.on('close', function(err) {
 						
 						if(err)

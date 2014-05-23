@@ -9,7 +9,7 @@ logs
 *.log
 
 test.*
-
+out
 gulpfile.js
 .ftppass
 .editorconfig
