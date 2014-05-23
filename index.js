@@ -183,18 +183,12 @@ module.exports = function (options) {
 
 		// have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
 
-		var relativeDir = null;
-        if(!prependBase)
-            relativeDir = path.relative(file.base , path.dirname(file.path)||'./')
-        else
-            relativeDir = path.relative(file.cwd , path.dirname(file.path)||'./')
+		//var relativeDir = null;
 
-        var fileName = path.basename(file.path);
-        var relativePath = path.join(relativeDir,fileName);
-		var finalRemotePath = normalizePath(path.join(remotePath, relativePath));
+		var finalRemotePath = normalizePath(path.join(remotePath, file.relative));
 
-        //["cwd","path","base"].forEach(function(d){console.log(d,file[d]);});
-        //console.log("FILE",finalRemotePath);
+        ["cwd","path","base"].forEach(function(d){console.log(d,file[d]);});
+        console.log("FINALREMOTEPATH",finalRemotePath);
 		
 		//connection pulled from pool
 		pool(function(sftp){
@@ -255,7 +249,7 @@ module.exports = function (options) {
                     else{
                         if (logFiles) {
                             gutil.log('gulp-sftp:', gutil.colors.green('Uploaded: ') +
-                                relativePath +
+                                file.relative +
                                 gutil.colors.green(' => ') +
                                 finalRemotePath);
                         }
