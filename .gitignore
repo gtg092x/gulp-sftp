@@ -8,7 +8,8 @@ fixture
 logs
 *.log
 
-test.js
+test.*
+
 gulpfile.js
 .ftppass
 .editorconfig

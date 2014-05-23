@@ -1,6 +1,6 @@
 {
   "name": "gulp-sftp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Upload files via SSH",
   "license": "MIT",
   "repository": "gtg092x/gulp-sftp",

@@ -7,6 +7,7 @@ var through = require('through2');
 var Connection = require('ssh2');
 var async = require('async');
 var parents = require('parents');
+var Stream = require('stream');
 
 var normalizePath = function(path){
 	return path.replace(/\\/g, '/');
@@ -183,7 +184,17 @@ module.exports = function (options) {
 						autoClose: true
 					});
 					
-					var readStream = fs.createReadStream(fileBase+localRelativePath);
+					//var readStream = fs.createReadStream(fileBase+localRelativePath);
+
+                    //var readStream = new Buffer(file.contents); //issue #7 credit u01jmg3
+
+                    // from http://stackoverflow.com/questions/12755997/how-to-create-streams-from-string-in-node-js
+                    // this feels so wrong
+                    var readStream = new Stream.Readable();
+                    readStream._read = function noop() {}; // redundant? see update below
+                    readStream.push(file.contents);
+                    readStream.push(null);
+
 					var uploadedBytes = 0;
 					
 					readStream.pipe(stream); // start upload
