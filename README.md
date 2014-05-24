@@ -128,7 +128,8 @@ gulp.task('default', function () {
   "keyMain": {
     "user": "username1",
     "pass": "password1"
-  },  
+  },
+  "keyShort": "username1:password1",
   "privateKey": {    
     "user": "username"
   },
