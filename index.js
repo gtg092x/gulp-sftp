@@ -139,7 +139,7 @@ module.exports = function (options) {
                 if (err)
                     throw err;
 
-                sftp.on('end', function(e) {
+                sftp.on('end', function() {
                     gutil.log('SFTP :: SFTP session closed');
                     sftpCache=null;
                     if(!finished)
