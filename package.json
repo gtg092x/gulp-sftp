@@ -33,10 +33,9 @@
     "gulp-util": "~2.2.0",
     "through2": "~0.4.0",
     "parents": "0.0.2",
-    "ssh2": "~0.2.23",
+    "ssh2": "~0.3.3",
     "async": "^0.7.0",
-    "object-assign": "~0.3.1",
-    "stream-buffers": "~0.2.5"
+    "object-assign": "~0.3.1"
   },
   "devDependencies": {}
 }

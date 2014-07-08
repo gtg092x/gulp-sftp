@@ -8,6 +8,7 @@ fixture
 logs
 *.log
 
+.DS_Store
 test.*
 test
 out
