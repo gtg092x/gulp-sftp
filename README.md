@@ -147,6 +147,8 @@ gulp.task('default', function () {
 
 ##Known Issues
 
+###Error:: SFTP abrupt closure
+
 ~~Some conditions can cause the [ssh2](https://github.com/mscdex/ssh2) connection to abruptly close. The issues that commonly cause this are large files (though they are checked for and are automatically converted to streams) and heavy memory usage.~~
 
 ~~To solve problems related to [ssh2](https://github.com/mscdex/ssh2) closures, try to use streams instead of buffers. Do this by passing `{buffer:false}` as an option with `gulp.src`. This isn't always an option, so I would suggest exploring ways to move between streams and buffers. Lars Kappert has a [great article on managing this](https://medium.com/web-code-junk/a2010c13d3d5).~~
