@@ -9,13 +9,11 @@ var async = require('async');
 var parents = require('parents');
 var Stream = require('stream');
 var assign = require('object-assign');
-var streamBuffers= require('stream-buffers');
 
 var normalizePath = function(path){
     return path.replace(/\\/g, '/');
 };
 
-//mdrake: TODO - support .key file including private key auth
 module.exports = function (options) {
     options = assign({}, options);// credit sindresorhus
 
@@ -269,6 +267,9 @@ module.exports = function (options) {
                 var size = file.stat.size;
 
 
+
+                //mdrake: this seems to have been fixed with the latest version of ssh2
+                /*
                 if(file.isBuffer()&&size>(200*1000)){
                     //ssh2 seems to close sftp uploads if file is arbitrarily large
                     //convert to stream if file is over 200kb
@@ -284,9 +285,11 @@ module.exports = function (options) {
 
                 }else{
 
-                    file.pipe(stream); // start upload
+                 file.pipe(stream); // start upload
 
-                }
+                }*/
+
+                file.pipe(stream); // start upload
 
                 stream.on('drain',function(){
                     uploadedBytes+=highWaterMark;
