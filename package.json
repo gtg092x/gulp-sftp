@@ -9,6 +9,9 @@
     "email": "mdrake@mediadrake.com",
     "url": "http://mediadrake.com"
   },
+  "contributors": [
+    "Benjamin P. Jung <headcr4sh@gmail.com>"
+  ],
   "engines": {
     "node": ">=0.10.0"
   },

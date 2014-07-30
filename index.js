@@ -148,7 +148,21 @@ module.exports = function (options) {
 
 
                 sftpCache = sftp;
-                uploader(sftpCache);
+                sftp.exists(remotePath, function (exists) {
+                  if (!exists) {
+                    gutil.log('Creating remote directory: "' + remotePath + '"...');
+                    sftp.mkdir(remotePath, {mode: '0755'}, function (err) {
+                      if (err) {
+                        this.emit('error', new gutil.PluginError('gulp-sftp', 'Couldn\'t create remote directory: "' + remotePath + '".'));
+                      } else {
+                        uploader(sftpCache);
+                      }
+                    });
+                  } else {
+                    // No need to create the directory first. Just start the upload.
+                    uploader(sftpCache);
+                  }
+                })
             });//c.sftp
         });//c.on('ready')
 
