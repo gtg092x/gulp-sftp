@@ -10,7 +10,10 @@
     "url": "http://mediadrake.com"
   },
   "contributors": [
-    "Benjamin P. Jung <headcr4sh@gmail.com>"
+    "Benjamin P. Jung <headcr4sh@gmail.com>",
+    "Carson Britt <carson.britt@a0002457.local>",
+    "Matthew Drake <mdrake@mediadrake.com>",
+    "Valan Brown <github@valanbrown.com>"
   ],
   "engines": {
     "node": ">=0.10.0"
