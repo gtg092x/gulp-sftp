@@ -65,7 +65,7 @@ If you intend to use anonymous login, use the value '@anonymous'.
 Type: `String`  
 Default: `'/'`
 
-The remote path to upload too. This path should exist, though the child directories that house your files do not need to.
+The remote path to upload too. If this path does not yet exist, it will be created, as well as the child directories that house your files.
 
 #### options.key
 
@@ -115,7 +115,7 @@ var sftp = require('gulp-sftp');
 gulp.task('default', function () {
 	return gulp.src('src/*')
 		.pipe(sftp({
-			host: 'website.com',			
+			host: 'website.com',
 			auth: 'keyMain'
 		}));
 });
@@ -130,20 +130,20 @@ gulp.task('default', function () {
     "pass": "password1"
   },
   "keyShort": "username1:password1",
-  "privateKey": {    
+  "privateKey": {
     "user": "username"
   },
-  "privateKeyEncrypted": {    
+  "privateKeyEncrypted": {
     "user": "username",
     "passphrase": "passphrase1"
   },
-  "privateKeyCustom": {    
+  "privateKeyCustom": {
     "user": "username",
     "passphrase": "passphrase1",
     "keyLocation": "/full/path/to/key"
   }
 }
-``` 
+```
 
 ##Known Issues
 
