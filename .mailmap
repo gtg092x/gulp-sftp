@@ -1,0 +1,12 @@
+#
+# This list is used by git-shortlog to fix a few botched name translations
+# in the git archive, either because the author's full name was messed up
+# and/or not always written the same way, making contributions from the
+# same person appearing not to be so.
+#
+
+Matthew Drake <mdrake@mediadrake.com>  <>
+Matthew Drake <mdrake@mediadrake.com>  gtg092x
+Matthew Drake <mdrake@mediadrake.com>  <matthew.drake@22squared.com>
+
+Valan Brown <github@valanbrown.com>
