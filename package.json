@@ -4,6 +4,10 @@
   "description": "Upload files via SSH",
   "license": "MIT",
   "repository": "gtg092x/gulp-sftp",
+  "homepage": "https://github.com/gtg092x/gulp-sftp/",
+  "bugs": {
+    "url" : "https://github.com/gtg092x/gulp-sftp/issues"
+  },
   "author": {
     "name": "Matthew Drake",
     "email": "mdrake@mediadrake.com",
