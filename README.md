@@ -72,7 +72,7 @@ The remote path to upload too. If this path does not yet exist, it will be creat
 Type: `String`
 Default: `'unix'`
 
-The remote platform that you are uploading too. If your destination server is a Windows machine, use the value `windows`.
+The remote platform that you are uploading to. If your destination server is a Windows machine, use the value `windows`.
 
 #### options.key
 
