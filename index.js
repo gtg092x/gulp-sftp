@@ -24,6 +24,7 @@ module.exports = function (options) {
 
     var fileCount = 0;
     var remotePath = options.remotePath || '/';
+    var remotePlatform = options.remotePlatform || options.platform || 'unix';
 
 
     options.authKey = options.authKey||options.auth;
@@ -235,7 +236,7 @@ module.exports = function (options) {
             var dirname=path.dirname(finalRemotePath);
             //get parents of the target dir
 
-            var fileDirs = parents(dirname)
+            var fileDirs = parents(dirname, {platform:remotePlatform})
                 .map(function(d){return d.replace(/^\/~/,"~");})
                 .map(normalizePath);
             //get filter out dirs that are closer to root than the base remote path
