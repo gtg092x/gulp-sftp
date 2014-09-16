@@ -201,7 +201,9 @@ module.exports = function (options) {
             connection_options.passphrase = key.passphrase;
         }
 
-
+        if(options.timeout){
+            connection_options.readyTimeout = options.timeout;
+        }
 
         c.connect(connection_options);
 
