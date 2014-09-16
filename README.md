@@ -110,6 +110,12 @@ Default: `.ftppass`
 
 A path relative to the project root to a JSON formatted file containing auth information.
 
+#### options.timeout
+type `int`
+Default: Currently set by ssh2 as `10000` milliseconds.
+
+An integer in milliseconds specifying how long to wait for a server response.
+
 
 ##Authentication
 
@@ -165,3 +171,4 @@ Some awesome work via @mscdex addressed this issue. Please make sure you have th
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
+
