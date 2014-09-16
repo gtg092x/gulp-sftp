@@ -154,6 +154,10 @@ gulp.task('default', function () {
 
 ##Known Issues
 
+###SFTP error or directory exists: Error: No such file /remote/sub/folder
+
+Version 0.1.2 has an issue for Windows clients when it comes to resolving remote paths. Please upgrade to 0.1.3.
+
 ###Error:: SFTP abrupt closure
 
 ~~Some conditions can cause the [ssh2](https://github.com/mscdex/ssh2) connection to abruptly close. The issues that commonly cause this are large files (though they are checked for and are automatically converted to streams) and heavy memory usage.~~
