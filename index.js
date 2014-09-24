@@ -26,7 +26,6 @@ module.exports = function (options) {
     var remotePath = options.remotePath || '/';
     var remotePlatform = options.remotePlatform || options.platform || 'unix';
 
-
     options.authKey = options.authKey||options.auth;
     var authFilePath = options.authFile || '.ftppass';
     var authFile=path.join('./',authFilePath);
@@ -117,7 +116,7 @@ module.exports = function (options) {
     var sftpCache = null;//sftp connection cache
     var connectionCache = null;//ssh connection cache
 
-    var pool = function(uploader){ // method to get cache or create connection
+    var pool = function(remotePath, uploader){ // method to get cache or create connection
 
 
 
@@ -132,9 +131,11 @@ module.exports = function (options) {
 
 
 
-        var c = new Connection();
+        var c = new Connection(),
+            remoteDir = path.dirname(remotePath);
         connectionCache = c;
         c.on('ready', function() {
+            var self = this;
 
             c.sftp(function(err, sftp) {
                 if (err)
@@ -149,12 +150,12 @@ module.exports = function (options) {
 
 
                 sftpCache = sftp;
-                sftp.exists(remotePath, function (exists) {
+                sftp.exists(remoteDir, function (exists) {
                   if (!exists) {
-                    gutil.log('Creating remote directory: "' + remotePath + '"...');
-                    sftp.mkdir(remotePath, {mode: '0755'}, function (err) {
+                    gutil.log('Creating remote directory: "' + remoteDir + '"...');
+                    sftp.mkdir(remoteDir, {mode: '0755'}, function (err) {
                       if (err) {
-                        this.emit('error', new gutil.PluginError('gulp-sftp', 'Couldn\'t create remote directory: "' + remotePath + '".'));
+                          self.emit('error', new gutil.PluginError('gulp-sftp', 'Couldn\'t create remote directory: "' + remoteDir + '". Please make sure at least its parent directory exists.'));
                       } else {
                         uploader(sftpCache);
                       }
@@ -222,14 +223,10 @@ module.exports = function (options) {
 
 
         // have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
-
-
         var finalRemotePath = normalizePath(path.join(remotePath, file.relative));
 
-
-
         //connection pulled from pool
-        pool.call(this,function(sftp){
+        pool.call(this, finalRemotePath, function(sftp){
             /*
              *  Create Directories
              */
@@ -238,14 +235,13 @@ module.exports = function (options) {
             var dirname=path.dirname(finalRemotePath);
             //get parents of the target dir
 
-            var fileDirs = parents(dirname, {platform:remotePlatform})
+            var fileDirs = parents(dirname, {platform: 'unix'})
                 .map(function(d){return d.replace(/^\/~/,"~");})
                 .map(normalizePath);
+
             //get filter out dirs that are closer to root than the base remote path
             //also filter out any dirs made during this gulp session
             fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length&&!mkDirCache[d];});
-
-
 
             //while there are dirs to create, create them
             //https://github.com/caolan/async#whilst - not the most commonly used async control flow
@@ -255,7 +251,9 @@ module.exports = function (options) {
                 var d= fileDirs.pop();
                 mkDirCache[d]=true;
                 //mdrake - TODO: use a default file permission instead of defaulting to 755
-
+                if(remotePlatform && remotePlatform.toLowerCase().indexOf('win')!==-1) {
+                    d = d.replace('/','\\');
+                }
                 sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
 
                     if(err){
