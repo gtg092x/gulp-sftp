@@ -197,6 +197,9 @@ module.exports = function (options) {
 
         if(options.password){
             connection_options.password = options.password;
+        }else if(options.agent) {
+            connection_options.agent = options.agent;
+            connection_options.agentForward = options.agentForward || false;
         }else if(key){
             connection_options.privateKey = key.contents;
             connection_options.passphrase = key.passphrase;

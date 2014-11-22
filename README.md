@@ -116,6 +116,18 @@ Default: Currently set by ssh2 as `10000` milliseconds.
 
 An integer in milliseconds specifying how long to wait for a server response.
 
+#### options.agent
+type `String`
+Default: `null`
+
+Path to ssh-agent's UNIX socket for ssh-agent-based user authentication.
+
+#### options.agentForward
+type `bool`
+Default: `false`
+
+Set to true to use OpenSSH agent forwarding. Requires that `options.agent` is configured.
+
 
 ##Authentication
 
