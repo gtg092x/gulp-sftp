@@ -119,7 +119,6 @@ module.exports = function (options) {
     var pool = function(remotePath, uploader){ // method to get cache or create connection
 
 
-
         if(sftpCache)
             return uploader(sftpCache);
 
@@ -129,13 +128,9 @@ module.exports = function (options) {
             gutil.log('Authenticating with private key.');
         }
 
-
-
-        var c = new Connection(),
-            remoteDir = path.dirname(remotePath);
+        var c = new Connection();
         connectionCache = c;
         c.on('ready', function() {
-            var self = this;
 
             c.sftp(function(err, sftp) {
                 if (err)
@@ -148,23 +143,8 @@ module.exports = function (options) {
                         this.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
                 });
 
-
                 sftpCache = sftp;
-                sftp.exists(remoteDir, function (exists) {
-                  if (!exists) {
-                    gutil.log('Creating remote directory: "' + remoteDir + '"...');
-                    sftp.mkdir(remoteDir, {mode: '0755'}, function (err) {
-                      if (err) {
-                          self.emit('error', new gutil.PluginError('gulp-sftp', 'Couldn\'t create remote directory: "' + remoteDir + '". Please make sure at least its parent directory exists.'));
-                      } else {
-                        uploader(sftpCache);
-                      }
-                    });
-                  } else {
-                    // No need to create the directory first. Just start the upload.
-                    uploader(sftpCache);
-                  }
-                })
+                uploader(sftpCache);
             });//c.sftp
         });//c.on('ready')
 
@@ -223,8 +203,6 @@ module.exports = function (options) {
             return cb();
         }
 
-
-
         // have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
         var finalRemotePath = normalizePath(path.join(remotePath, file.relative));
 
@@ -238,9 +216,18 @@ module.exports = function (options) {
             var dirname=path.dirname(finalRemotePath);
             //get parents of the target dir
 
-            var fileDirs = parents(dirname, {platform: 'unix'})
+            var fileDirs = parents(dirname)
                 .map(function(d){return d.replace(/^\/~/,"~");})
                 .map(normalizePath);
+
+            if(dirname.search(/^\//) === 0){
+                fileDirs = fileDirs.map(function(dir){
+                    if(dir.search(/^\//) === 0){
+                        return dir;
+                    }
+                    return '/' + dir;
+                });
+            }
 
             //get filter out dirs that are closer to root than the base remote path
             //also filter out any dirs made during this gulp session
@@ -263,7 +250,7 @@ module.exports = function (options) {
                         //assuming that the directory exists here, silencing this error
                         gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
                     }else{
-                        gutil.log('SFTP Created:', gutil.colors.green(dirname));
+                        gutil.log('SFTP Created:', gutil.colors.green(d));
                     }
                     next();
                 });
