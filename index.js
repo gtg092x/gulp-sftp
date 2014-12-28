@@ -231,7 +231,7 @@ module.exports = function (options) {
 
             //get filter out dirs that are closer to root than the base remote path
             //also filter out any dirs made during this gulp session
-            fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length&&!mkDirCache[d];});
+            fileDirs = fileDirs.filter(function(d){return d.length>=remotePath.length&&!mkDirCache[d];});
 
             //while there are dirs to create, create them
             //https://github.com/caolan/async#whilst - not the most commonly used async control flow
@@ -271,28 +271,6 @@ module.exports = function (options) {
                 var highWaterMark = stream.highWaterMark||(16*1000);
                 var size = file.stat.size;
 
-
-
-                //mdrake: this seems to have been fixed with the latest version of ssh2
-                /*
-                if(file.isBuffer()&&size>(200*1000)){
-                    //ssh2 seems to close sftp uploads if file is arbitrarily large
-                    //convert to stream if file is over 200kb
-                    var readableDecoy = new streamBuffers.ReadableStreamBuffer({
-                        frequency: 10,
-                        chunkSize: highWaterMark
-                    });
-                    readableDecoy.put(file.contents);
-                    readableDecoy.pipe(stream); // start upload
-                    stream.on('close',function(){
-                        readableDecoy.destroy();
-                    });
-
-                }else{
-
-                 file.pipe(stream); // start upload
-
-                }*/
 
                 file.pipe(stream); // start upload
 
