@@ -170,6 +170,27 @@ gulp.task('default', function () {
 }
 ```
 
+
+##Work with [pem](https://github.com/andris9/pem)
+
+To use [pem](https://github.com/andris9/pem) create private keys and certificates for access your server: 
+
+```js
+var pem = require('pem');
+gulp.task('deploy:test', function () {
+    pem.createCertificate({}, function (err, kyes) {
+        return gulp.src('./src/**/*')
+            .pipe(sftp({
+                host: 'testserver.com',
+                user: 'testuser',
+                pass: 'testpass',
+                key: kyes.clientKey,
+                keyContents: kyes.keyContents
+            }));
+    });
+});
+```
+
 ##Known Issues
 
 ###SFTP error or directory exists: Error: No such file /remote/sub/folder
