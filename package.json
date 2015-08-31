@@ -1,16 +1,69 @@
 {
-  "name": "gulp-sftp-callback",
+  "name": "gulp-sftp",
   "version": "0.1.5",
   "description": "Upload files via SSH",
   "license": "MIT",
-  "repository": "fulf/gulp-sftp-callback",
-  "homepage": "https://github.com/fulf/gulp-sftp-callback/",
+  "repository": "gtg092x/gulp-sftp",
+  "homepage": "https://github.com/gtg092x/gulp-sftp/",
   "bugs": {
-    "url" : "https://github.com/fulf/gulp-sftp-callback/issues"
+    "url" : "https://github.com/gtg092x/gulp-sftp/issues"
   },
   "author": {
-    "name": "Sorin Guga",
-    "email": "sorin.guga@gmail.com"
+    "name": "Matthew Drake",
+    "email": "mdrake@mediadrake.com",
+    "url": "http://mediadrake.com"
+  },
+  "contributors": [
+    "Benjamin P. Jung <headcr4sh@gmail.com>",
+    "Carson Britt <carson28@gmail.com> <carson.britt@a0002457.local>",
+    "Matthew Drake <mdrake@mediadrake.com>",
+    "Valan Brown <github@valanbrown.com>",
+    "Sorin Guga <sorin.guga@gmail.com>"
+  ],
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {},
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "sftp",
+    "file",
+    "files",
+    "transfer",
+    "protocol",
+    "server",
+    "client",
+    "upload",
+    "deploy",
+    "deployment"
+  ],
+  "dependencies": {
+    "async": "~0.9.0",
+    "gulp-util": "~3.0.0",
+    "object-assign": "~0.3.1",
+    "parents": "~1.0.0",
+    "ssh2": ">0.3.3",
+    "through2": "~0.4.2"
+  },
+  "devDependencies": {}
+}
+{
+  "name": "gulp-sftp",
+  "version": "0.1.4",
+  "description": "Upload files via SSH",
+  "license": "MIT",
+  "repository": "gtg092x/gulp-sftp",
+  "homepage": "https://github.com/gtg092x/gulp-sftp/",
+  "bugs": {
+    "url" : "https://github.com/gtg092x/gulp-sftp/issues"
+  },
+  "author": {
+    "name": "Matthew Drake",
+    "email": "mdrake@mediadrake.com",
+    "url": "http://mediadrake.com"
   },
   "contributors": [
     "Benjamin P. Jung <headcr4sh@gmail.com>",
