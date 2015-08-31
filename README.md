@@ -128,6 +128,12 @@ Default: `false`
 
 Set to true to use OpenSSH agent forwarding. Requires that `options.agent` is configured.
 
+#### options.callback
+type `function`
+Default: `null`
+
+Callback function to be called once the SFTP connection is closed.
+
 
 ##Authentication
 
