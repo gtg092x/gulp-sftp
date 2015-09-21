@@ -162,7 +162,6 @@ module.exports = function (options) {
                 self.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
             }
             gutil.log('Connection :: close',had_error!==false?"with error":"");
-            if(options.callback) options.callback();
         });
 
 
@@ -319,7 +318,10 @@ module.exports = function (options) {
             sftpCache.end();
         if(connectionCache)
             connectionCache.end();
-
-        cb();
+        
+        if(options.callback) 
+            options.callback();
+        else
+            cb();
     });
 };
