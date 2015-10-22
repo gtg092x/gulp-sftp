@@ -1,12 +1,12 @@
 {
-  "name": "gulp-sftp",
-  "version": "0.1.5",
+  "name": "gulp-sftp-new",
+  "version": "0.1.6",
   "description": "Upload files via SSH",
   "license": "MIT",
-  "repository": "gtg092x/gulp-sftp",
-  "homepage": "https://github.com/gtg092x/gulp-sftp/",
+  "repository": "fulf/gulp-sftp",
+  "homepage": "https://github.com/fulf/gulp-sftp",
   "bugs": {
-    "url" : "https://github.com/gtg092x/gulp-sftp/issues"
+    "url" : "https://github.com/fulf/gulp-sftp/issues"
   },
   "author": {
     "name": "Matthew Drake",

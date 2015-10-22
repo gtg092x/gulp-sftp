@@ -1,15 +1,15 @@
-# [gulp](http://gulpjs.com)-sftp [![Build Status](https://travis-ci.org/gtg092x/gulp-sftp.svg?branch=master)](https://travis-ci.org/gtg092x/gulp-sftp)
+# [gulp](http://gulpjs.com)-sftp [![Build Status](https://travis-ci.org/fulf/gulp-sftp.svg?branch=master)](https://travis-ci.org/fulf/gulp-sftp)
 
 > Upload files via SSH
 
 Useful for uploading and deploying things via sftp. Right now this plugin just uploads everything. Caching and hash comparison are two TODO items.  
 
-[![NPM](https://nodei.co/npm/gulp-sftp.png?downloads=true&stars=true)](https://nodei.co/npm/gulp-sftp/)
+[![NPM](https://nodei.co/npm/gulp-sftp.png?downloads=true&stars=true)](https://nodei.co/npm/gulp-sftp-new/)
 
 ## Install
 
 ```bash
-$ npm install --save-dev gulp-sftp
+$ npm install --save-dev gulp-sftp-new
 ```
 
 
@@ -17,7 +17,7 @@ $ npm install --save-dev gulp-sftp
 
 ```js
 var gulp = require('gulp');
-var sftp = require('gulp-sftp');
+var sftp = require('gulp-sftp-new');
 
 gulp.task('default', function () {
 	return gulp.src('src/*')
@@ -141,7 +141,7 @@ For better security, save authentication data in a json formatted file named `.f
 
 ```js
 var gulp = require('gulp');
-var sftp = require('gulp-sftp');
+var sftp = require('gulp-sftp-new');
 
 gulp.task('default', function () {
 	return gulp.src('src/*')
@@ -188,7 +188,7 @@ Version 0.1.2 has an issue for Windows clients when it comes to resolving remote
 
 ~~To solve problems related to [ssh2](https://github.com/mscdex/ssh2) closures, try to use streams instead of buffers. Do this by passing `{buffer:false}` as an option with `gulp.src`. This isn't always an option, so I would suggest exploring ways to move between streams and buffers. Lars Kappert has a [great article on managing this](https://medium.com/web-code-junk/a2010c13d3d5).~~
 
-Some awesome work via @mscdex addressed this issue. Please make sure you have the latest version or greater of gulp-sftp (0.1.1) and the latest version or greater of ssh2 (0.3.4) and you should not see abrupt disconnects with large files.
+Some awesome work via @mscdex addressed this issue. Please make sure you have the latest version or greater of gulp-sftp-new (0.1.1) and the latest version or greater of ssh2 (0.3.4) and you should not see abrupt disconnects with large files.
 
 ## License
 
