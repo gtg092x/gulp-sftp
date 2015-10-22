@@ -4,7 +4,7 @@
 
 Useful for uploading and deploying things via sftp. Right now this plugin just uploads everything. Caching and hash comparison are two TODO items.  
 
-[![NPM](https://nodei.co/npm/gulp-sftp.png?downloads=true&stars=true)](https://nodei.co/npm/gulp-sftp-new/)
+[![NPM](https://nodei.co/npm/gulp-sftp-new.png?downloads=true&stars=true)](https://nodei.co/npm/gulp-sftp-new/)
 
 ## Install
 
