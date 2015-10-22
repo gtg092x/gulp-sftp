@@ -1,4 +1,4 @@
-# [gulp](http://gulpjs.com)-sftp [![Build Status](https://travis-ci.org/fulf/gulp-sftp.svg?branch=master)](https://travis-ci.org/fulf/gulp-sftp)
+# [gulp](http://gulpjs.com)-sftp-new [![Build Status](https://travis-ci.org/fulf/gulp-sftp.svg?branch=master)](https://travis-ci.org/fulf/gulp-sftp)
 
 > Upload files via SSH
 
