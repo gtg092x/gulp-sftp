@@ -189,7 +189,13 @@ module.exports = function (options) {
             connection_options.readyTimeout = options.timeout;
         }
 
-        c.connect(connection_options);
+        connection_options.tryKeyboard = true;
+        c.on('keyboard-interactive',
+            function(name, instructions, instructionsLang, prompts, finish) {
+          // Pass answers to `prompts` to `finish()`. Typically `prompts.length === 1`
+          // with `prompts[0] === "Password: "`
+          finish([connection_options.password]);
+        }).connect(connection_options);
 
         /*
          * end connection options
