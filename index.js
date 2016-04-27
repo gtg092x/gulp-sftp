@@ -80,7 +80,7 @@ module.exports = function (options) {
             for(var i=0,keyPath;keyPath=key.location[i++];){
 
 
-                if(fs.existsSync(keyPath)){
+                if(fs.accessSync(keyPath)){
                     key.contents = fs.readFileSync(keyPath);
                     break;
                 }
