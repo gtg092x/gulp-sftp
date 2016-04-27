@@ -76,11 +76,9 @@ module.exports = function (options) {
                 if (key.location[i].substr(0,2) === '~/')
                     key.location[i] = path.resolve(home,key.location[i].replace(/^~\//,""));
 
-
             for(var i=0,keyPath;keyPath=key.location[i++];){
-
-
-                if(fs.accessSync(keyPath)){
+                var stat = fs.statSync(keyPath);
+                if (stat && stat.isFile()) {
                     key.contents = fs.readFileSync(keyPath);
                     break;
                 }
