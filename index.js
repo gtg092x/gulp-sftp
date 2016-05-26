@@ -156,13 +156,17 @@ module.exports = function (options) {
         c.on('end', function() {
             gutil.log('Connection :: end');
         });
-        c.on('close', function(had_error) {
+        c.on('close', function(err) {
             if(!finished){
                 gutil.log('gulp-sftp', "SFTP abrupt closure");
                 self.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
             }
-            gutil.log('Connection :: close',had_error!==false?"with error":"");
-            if(options.callback) options.callback();
+            if (err) {
+                gutil.log('Connection :: close, ', gutil.colors.red('Error: ' + err));
+            } else {
+                gutil.log('Connection :: closed');
+            }
+            
         });
 
 
@@ -244,16 +248,21 @@ module.exports = function (options) {
                 if(remotePlatform && remotePlatform.toLowerCase().indexOf('win')!==-1) {
                     d = d.replace('/','\\');
                 }
-                sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
-
-                    if(err){
-                        //assuming that the directory exists here, silencing this error
-                        gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
-                    }else{
-                        gutil.log('SFTP Created:', gutil.colors.green(d));
+                sftp.exists(d, function(exist) {
+                    if (!exist) {
+                        sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
+                            if(err){
+                                gutil.log('SFTP Mkdir Error:', gutil.colors.red(err + " " +d));
+                            }else{
+                                gutil.log('SFTP Created:', gutil.colors.green(d));
+                            }
+                            next();
+                        });
+                    } else {
+                        next();
                     }
-                    next();
                 });
+                
             },function(){
 
                 var stream = sftp.createWriteStream(finalRemotePath,{//REMOTE PATH
