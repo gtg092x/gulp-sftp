@@ -247,8 +247,10 @@ module.exports = function (options) {
                 sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
 
                     if(err){
-                        //assuming that the directory exists here, silencing this error
-                        gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
+                        // Supressing SFTP Error Code 11 (0x000B) SSH_ERROR_FILE_ALREADY_EXISTS
+                        if(err.code !== 11){
+                            gutil.log('SFTP error:', gutil.colors.red(err + " " +d));
+                        }
                     }else{
                         gutil.log('SFTP Created:', gutil.colors.green(d));
                     }
