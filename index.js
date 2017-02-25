@@ -278,14 +278,16 @@ module.exports = function (options) {
 
 
                 var highWaterMark = stream.highWaterMark||(16*1000);
-                var size = file.stat.size;
+                var size = file.stat && file.stat.size || 0;
 
 
                 file.pipe(stream); // start upload
 
                 stream.on('drain',function(){
                     uploadedBytes+=highWaterMark;
-                    var p = Math.round((uploadedBytes/size)*100);
+                    var p = (size) 
+                        ? Math.round((uploadedBytes/size)*100)
+                        : 0;
                     p = Math.min(100,p);
                     gutil.log('gulp-sftp:',finalRemotePath,"uploaded",(uploadedBytes/1000)+"kb");
                 });
