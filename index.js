@@ -130,6 +130,7 @@ module.exports = function (options) {
 
         var c = new Connection();
         connectionCache = c;
+        
         c.on('ready', function() {
 
             c.sftp(function(err, sftp) {
@@ -142,19 +143,22 @@ module.exports = function (options) {
                     if(!finished)
                         this.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
                 });
-
+                
                 sftpCache = sftp;
                 uploader(sftpCache);
+                if(options.onStart) options.onStart();
             });//c.sftp
         });//c.on('ready')
 
         var self = this;
         c.on('error', function(err) {
             self.emit('error', new gutil.PluginError('gulp-sftp', err));
+            if(options.onError) options.onError();
             //return cb(err);
         });
         c.on('end', function() {
             gutil.log('Connection :: end');
+            if(options.onEnd) options.onEnd();
         });
         c.on('close', function(err) {
             if(!finished){
@@ -166,6 +170,7 @@ module.exports = function (options) {
             } else {
                 gutil.log('Connection :: closed');
             }
+            if(options.onClose) options.onClose();
             
         });
 
