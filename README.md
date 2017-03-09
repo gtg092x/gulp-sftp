@@ -128,7 +128,25 @@ Default: `false`
 
 Set to true to use OpenSSH agent forwarding. Requires that `options.agent` is configured.
 
-#### options.callback
+#### options.onStart
+type `function`
+Default: `null`
+
+Callback function to be called once the SFTP connection is started.
+
+#### options.onError
+type `function`
+Default: `null`
+
+Callback function to be called once the SFTP connection has errors.
+
+#### options.onEnd
+type `function`
+Default: `null`
+
+Callback function to be called once the SFTP finished uploading files.
+
+#### options.onClose
 type `function`
 Default: `null`
 
