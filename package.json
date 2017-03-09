@@ -1,6 +1,6 @@
 {
   "name": "gulp-sftp-with-callbacks",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Forked version of official gulp-sftp with additional callbacks. Official repo: gtg092x/gulp-sftp",
   "license": "MIT",
   "repository": "nynevi/gulp-sftp",
