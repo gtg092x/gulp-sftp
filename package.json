@@ -1,12 +1,12 @@
 {
-  "name": "gulp-sftp-with-callbacks",
-  "version": "0.1.7",
-  "description": "Forked version of official gulp-sftp with additional callbacks. Official repo: gtg092x/gulp-sftp",
+  "name": "gulp-sftp",
+  "version": "0.1.5",
+  "description": "Upload files via SSH",
   "license": "MIT",
-  "repository": "nynevi/gulp-sftp",
-  "homepage": "https://github.com/nynevi/gulp-sftp",
+  "repository": "gtg092x/gulp-sftp",
+  "homepage": "https://github.com/gtg092x/gulp-sftp/",
   "bugs": {
-    "url" : "https://github.com/nynevi/gulp-sftp/issues"
+    "url" : "https://github.com/gtg092x/gulp-sftp/issues"
   },
   "author": {
     "name": "Matthew Drake",
