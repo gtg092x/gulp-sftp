@@ -153,7 +153,7 @@ module.exports = function (options) {
         var self = this;
         c.on('error', function(err) {
             self.emit('error', new gutil.PluginError('gulp-sftp', err));
-            if(options.onError) options.onError();
+            if(options.onError) options.onError(err);
             //return cb(err);
         });
         c.on('end', function() {
@@ -170,7 +170,7 @@ module.exports = function (options) {
             } else {
                 gutil.log('Connection :: closed');
             }
-            if(options.onClose) options.onClose();
+            if(options.onClose) options.onClose(err);
             
         });
 
