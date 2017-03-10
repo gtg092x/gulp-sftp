@@ -134,11 +134,45 @@ Default: `null`
 
 Callback function to be called once the SFTP connection is started.
 
+```js
+var gulp = require('gulp');
+var sftp = require('gulp-sftp');
+
+gulp.task('default', function () {
+	return gulp.src('src/*')
+		.pipe(sftp({
+			host: 'website.com',
+			user: 'johndoe',
+			pass: '1234',
+      onStart: function() {
+
+      }
+		}));
+});
+```
+
 #### options.onError
 type `function`
 Default: `null`
 
 Callback function to be called once the SFTP connection has errors.
+
+```js
+var gulp = require('gulp');
+var sftp = require('gulp-sftp');
+
+gulp.task('default', function () {
+	return gulp.src('src/*')
+		.pipe(sftp({
+			host: 'website.com',
+			user: 'johndoe',
+			pass: '1234',
+      onError: function(error) {
+        
+      }
+		}));
+});
+```
 
 #### options.onEnd
 type `function`
@@ -146,11 +180,45 @@ Default: `null`
 
 Callback function to be called once the SFTP finished uploading files.
 
+```js
+var gulp = require('gulp');
+var sftp = require('gulp-sftp');
+
+gulp.task('default', function () {
+	return gulp.src('src/*')
+		.pipe(sftp({
+			host: 'website.com',
+			user: 'johndoe',
+			pass: '1234',
+      onEnd: function() {
+        
+      }
+		}));
+});
+```
+
 #### options.onClose
 type `function`
 Default: `null`
 
 Callback function to be called once the SFTP connection is closed.
+
+```js
+var gulp = require('gulp');
+var sftp = require('gulp-sftp');
+
+gulp.task('default', function () {
+	return gulp.src('src/*')
+		.pipe(sftp({
+			host: 'website.com',
+			user: 'johndoe',
+			pass: '1234',
+      onClose: function() {
+        
+      }
+		}));
+});
+```
 
 
 ##Authentication
