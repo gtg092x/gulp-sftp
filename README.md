@@ -135,7 +135,7 @@ Default: `null`
 Callback function to be called once the SFTP connection is closed.
 
 
-##Authentication
+## Authentication
 
 For better security, save authentication data in a json formatted file named `.ftppass` (or to whatever value you set options.authFile to). **Be sure to add this file to .gitignore**. You do not typically want auth information stored in version control.
 
@@ -177,7 +177,7 @@ gulp.task('default', function () {
 ```
 
 
-##Work with [pem](https://github.com/andris9/pem)
+## Work with [pem](https://github.com/andris9/pem)
 
 To use [pem](https://github.com/andris9/pem) create private keys and certificates for access your server: 
 
@@ -197,13 +197,13 @@ gulp.task('deploy:test', function () {
 });
 ```
 
-##Known Issues
+## Known Issues
 
-###SFTP error or directory exists: Error: No such file /remote/sub/folder
+### SFTP error or directory exists: Error: No such file /remote/sub/folder
 
 Version 0.1.2 has an issue for Windows clients when it comes to resolving remote paths. Please upgrade to 0.1.3.
 
-###Error:: SFTP abrupt closure
+### Error:: SFTP abrupt closure
 
 ~~Some conditions can cause the [ssh2](https://github.com/mscdex/ssh2) connection to abruptly close. The issues that commonly cause this are large files (though they are checked for and are automatically converted to streams) and heavy memory usage.~~
 
