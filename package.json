@@ -18,12 +18,15 @@
     "Carson Britt <carson28@gmail.com> <carson.britt@a0002457.local>",
     "Matthew Drake <mdrake@mediadrake.com>",
     "Valan Brown <github@valanbrown.com>",
-    "Sorin Guga <sorin.guga@gmail.com>"
+    "Sorin Guga <sorin.guga@gmail.com>",
+    "Sergii Rudchenko <rudchenkos@gmail.com>"
   ],
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6.11.1"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "files": [
     "index.js"
   ],
@@ -48,5 +51,7 @@
     "ssh2": "~0.3.3",
     "through2": "~0.4.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
 }

@@ -1,4 +1,5 @@
 'use strict';
+var clearDirectory = require('./clear').clearDirectory;
 var path = require('path');
 var fs = require('fs');
 var gutil = require('gulp-util');
@@ -99,10 +100,8 @@ module.exports = function (options) {
      */
 
 
-
-
+    var clearPath = options.clearDestination ? options.remotePath : undefined;
     var logFiles = options.logFiles === false ? false : true;
-
 
     delete options.remotePath;
     delete options.localPath;
@@ -118,7 +117,6 @@ module.exports = function (options) {
 
     var pool = function(remotePath, uploader){ // method to get cache or create connection
 
-
         if(sftpCache)
             return uploader(sftpCache);
 
@@ -128,6 +126,7 @@ module.exports = function (options) {
             gutil.log('Authenticating with private key.');
         }
 
+        var self = this;
         var c = new Connection();
         connectionCache = c;
         c.on('ready', function() {
@@ -143,12 +142,19 @@ module.exports = function (options) {
                         this.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
                 });
 
-                sftpCache = sftp;
-                uploader(sftpCache);
+                var proceed = function() {
+                    sftpCache = sftp;
+                    uploader(sftpCache);
+                };
+
+                if (clearPath) {
+                    clearDirectory(sftp, clearPath, proceed);
+                } else {
+                    proceed();
+                }
             });//c.sftp
         });//c.on('ready')
 
-        var self = this;
         c.on('error', function(err) {
             self.emit('error', new gutil.PluginError('gulp-sftp', err));
             //return cb(err);

@@ -67,6 +67,13 @@ Default: `'/'`
 
 The remote path to upload to. If this path does not yet exist, it will be created, as well as the child directories that house your files.
 
+#### options.clearDestination
+
+Type: `Boolean`
+Default: `false`
+
+Clear the `options.remotePath` directory before upload.
+
 #### options.remotePlatform
 
 Type: `String`
