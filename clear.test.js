@@ -60,10 +60,12 @@ function mockSFTP(vfs) {
             const dirEntry = resolvePath(vfs, path);
 
             try {
-                const ftpEntries = Object.entries(dirEntry).map(([name, contents]) => ({
-                    filename: name,
-                    longname: contents instanceof Object ? dirLongName : fileLongName
-                }));
+                const ftpEntries = Object.keys(dirEntry)
+                    .map((k) => [k, dirEntry[k]])
+                    .map(([name, contents]) => ({
+                        filename: name,
+                        longname: contents instanceof Object ? dirLongName : fileLongName
+                    }));
 
                 try { callback(null, ftpEntries); } catch (callbackFailure) { console.error(callbackFailure) }
             } catch (e) {
