@@ -126,7 +126,6 @@ module.exports = function (options) {
             gutil.log('Authenticating with private key.');
         }
 
-        var self = this;
         var c = new Connection();
         connectionCache = c;
         c.on('ready', function() {
@@ -155,6 +154,7 @@ module.exports = function (options) {
             });//c.sftp
         });//c.on('ready')
 
+        var self = this;
         c.on('error', function(err) {
             self.emit('error', new gutil.PluginError('gulp-sftp', err));
             //return cb(err);
