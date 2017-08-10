@@ -182,6 +182,7 @@ module.exports = function (options) {
             if (!options.useKeyboardInteractive) {
                 connection_options.password = options.password;
             } else {
+              connection_options.tryKeyboard = true;
               c.on('keyboard-interactive', function(
                 name,
                 instructions,
