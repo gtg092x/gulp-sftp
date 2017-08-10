@@ -60,6 +60,13 @@ If this option is not set, gulp-sftp assumes the user is using private key authe
 
 If you intend to use anonymous login, use the value '@anonymous'.
 
+#### options.useKeyboardInteractive
+
+type `bool`
+Default: `false`
+
+Use keyboard-interactive user authentication(if primary user authentication method fails, you can try to set this `true`).
+
 #### options.remotePath
 
 Type: `String`  
