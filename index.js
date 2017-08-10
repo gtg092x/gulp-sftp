@@ -169,7 +169,6 @@ module.exports = function (options) {
             
         });
 
-
         /*
          * connection options, may be a key
          */
@@ -180,7 +179,20 @@ module.exports = function (options) {
         };
 
         if(options.password){
-            connection_options.password = options.password;
+            if (!options.useKeyboardInteractive) {
+                connection_options.password = options.password;
+            } else {
+              connection_options.tryKeyboard = true;
+              c.on('keyboard-interactive', function(
+                name,
+                instructions,
+                instructionsLang,
+                prompts,
+                finish
+              ) {
+                finish([options.password]);
+              });
+            }
         }else if(options.agent) {
             connection_options.agent = options.agent;
             connection_options.agentForward = options.agentForward || false;
