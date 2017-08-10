@@ -45,7 +45,7 @@
     "gulp-util": "~3.0.0",
     "object-assign": "~0.3.1",
     "parents": "~1.0.0",
-    "ssh2": "~0.3.3",
+    "ssh2": "~0.5.5",
     "through2": "~0.4.2"
   },
   "devDependencies": {}
