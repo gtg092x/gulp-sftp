@@ -190,7 +190,7 @@ module.exports = function (options) {
                 prompts,
                 finish
               ) {
-                finish([connection_options.password]);
+                finish([options.password]);
               });
             }
         }else if(options.agent) {
