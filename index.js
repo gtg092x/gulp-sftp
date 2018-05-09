@@ -119,7 +119,6 @@ module.exports = function (options) {
     var pool = function(remotePath, uploader){ // method to get cache or create connection
 
 
-
         if(sftpCache)
             return uploader(sftpCache);
 
@@ -129,13 +128,9 @@ module.exports = function (options) {
             gutil.log('Authenticating with private key.');
         }
 
-
-
-        var c = new Connection(),
-            remoteDir = path.dirname(remotePath);
+        var c = new Connection();
         connectionCache = c;
         c.on('ready', function() {
-            var self = this;
 
             c.sftp(function(err, sftp) {
                 if (err)
@@ -148,23 +143,8 @@ module.exports = function (options) {
                         this.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
                 });
 
-
                 sftpCache = sftp;
-                sftp.exists(remoteDir, function (exists) {
-                  if (!exists) {
-                    gutil.log('Creating remote directory: "' + remoteDir + '"...');
-                    sftp.mkdir(remoteDir, {mode: '0755'}, function (err) {
-                      if (err) {
-                          self.emit('error', new gutil.PluginError('gulp-sftp', 'Couldn\'t create remote directory: "' + remoteDir + '". Please make sure at least its parent directory exists.'));
-                      } else {
-                        uploader(sftpCache);
-                      }
-                    });
-                  } else {
-                    // No need to create the directory first. Just start the upload.
-                    uploader(sftpCache);
-                  }
-                })
+                uploader(sftpCache);
             });//c.sftp
         });//c.on('ready')
 
@@ -176,13 +156,17 @@ module.exports = function (options) {
         c.on('end', function() {
             gutil.log('Connection :: end');
         });
-        c.on('close', function(had_error) {
+        c.on('close', function(err) {
             if(!finished){
                 gutil.log('gulp-sftp', "SFTP abrupt closure");
                 self.emit('error', new gutil.PluginError('gulp-sftp', "SFTP abrupt closure"));
             }
-            gutil.log('Connection :: close',had_error!==false?"with error":"");
-
+            if (err) {
+                gutil.log('Connection :: close, ', gutil.colors.red('Error: ' + err));
+            } else {
+                gutil.log('Connection :: closed');
+            }
+            
         });
 
 
@@ -223,8 +207,6 @@ module.exports = function (options) {
             return cb();
         }
 
-
-
         // have to create a new connection for each file otherwise they conflict, pulled from sindresorhus
         var finalRemotePath = normalizePath(path.join(remotePath, file.relative));
 
@@ -247,9 +229,18 @@ module.exports = function (options) {
                 .map(function(d){return d.replace(/^\/~/,"~");})
                 .map(normalizePath);
 
+            if(dirname.search(/^\//) === 0){
+                fileDirs = fileDirs.map(function(dir){
+                    if(dir.search(/^\//) === 0){
+                        return dir;
+                    }
+                    return '/' + dir;
+                });
+            }
+
             //get filter out dirs that are closer to root than the base remote path
             //also filter out any dirs made during this gulp session
-            fileDirs = fileDirs.filter(function(d){return d.length>remotePath.length&&!mkDirCache[d];});
+            fileDirs = fileDirs.filter(function(d){return d.length>=remotePath.length&&!mkDirCache[d];});
 
             //while there are dirs to create, create them
             //https://github.com/caolan/async#whilst - not the most commonly used async control flow
@@ -262,16 +253,21 @@ module.exports = function (options) {
                 if(remotePlatform && remotePlatform.toLowerCase().indexOf('win')!==-1) {
                     d = d.replace('/\//g','\\');
                 }
-                sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
-
-                    if(err){
-                        //assuming that the directory exists here, silencing this error
-                        gutil.log('SFTP error or directory exists:', gutil.colors.red(err + " " +d));
-                    }else{
-                        gutil.log('SFTP Created:', gutil.colors.green(dirname));
+                sftp.exists(d, function(exist) {
+                    if (!exist) {
+                        sftp.mkdir(d, {mode: '0755'}, function(err){//REMOTE PATH
+                            if(err){
+                                gutil.log('SFTP Mkdir Error:', gutil.colors.red(err + " " +d));
+                            }else{
+                                gutil.log('SFTP Created:', gutil.colors.green(d));
+                            }
+                            next();
+                        });
+                    } else {
+                        next();
                     }
-                    next();
                 });
+                
             },function(){
 
                 var stream = sftp.createWriteStream(finalRemotePath,{//REMOTE PATH
@@ -289,28 +285,6 @@ module.exports = function (options) {
                 var highWaterMark = stream.highWaterMark||(16*1000);
                 var size = file.stat.size;
 
-
-
-                //mdrake: this seems to have been fixed with the latest version of ssh2
-                /*
-                if(file.isBuffer()&&size>(200*1000)){
-                    //ssh2 seems to close sftp uploads if file is arbitrarily large
-                    //convert to stream if file is over 200kb
-                    var readableDecoy = new streamBuffers.ReadableStreamBuffer({
-                        frequency: 10,
-                        chunkSize: highWaterMark
-                    });
-                    readableDecoy.put(file.contents);
-                    readableDecoy.pipe(stream); // start upload
-                    stream.on('close',function(){
-                        readableDecoy.destroy();
-                    });
-
-                }else{
-
-                 file.pipe(stream); // start upload
-
-                }*/
 
                 file.pipe(stream); // start upload
 

@@ -128,6 +128,12 @@ Default: `false`
 
 Set to true to use OpenSSH agent forwarding. Requires that `options.agent` is configured.
 
+#### options.callback
+type `function`
+Default: `null`
+
+Callback function to be called once the SFTP connection is closed.
+
 
 ##Authentication
 
@@ -168,6 +174,27 @@ gulp.task('default', function () {
     "keyLocation": "/full/path/to/key"
   }
 }
+```
+
+
+##Work with [pem](https://github.com/andris9/pem)
+
+To use [pem](https://github.com/andris9/pem) create private keys and certificates for access your server: 
+
+```js
+var pem = require('pem');
+gulp.task('deploy:test', function () {
+    pem.createCertificate({}, function (err, kyes) {
+        return gulp.src('./src/**/*')
+            .pipe(sftp({
+                host: 'testserver.com',
+                user: 'testuser',
+                pass: 'testpass',
+                key: kyes.clientKey,
+                keyContents: kyes.keyContents
+            }));
+    });
+});
 ```
 
 ##Known Issues
