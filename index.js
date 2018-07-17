@@ -233,9 +233,9 @@ module.exports = function (options) {
                 });
             }
 
-            //get filter out dirs that are closer to root than the base remote path
-            //also filter out any dirs made during this gulp session
-            fileDirs = fileDirs.filter(function(d){return d.length>=remotePath.length&&!mkDirCache[d];});
+            // filter out dirs that we have allready tried to create this gulp session
+            // leave the rest in to make sure they exist
+            fileDirs = fileDirs.filter(function(d){return !mkDirCache[d];});
 
             //while there are dirs to create, create them
             //https://github.com/caolan/async#whilst - not the most commonly used async control flow
@@ -256,11 +256,10 @@ module.exports = function (options) {
                             }else{
                                 gutil.log('SFTP Created:', gutil.colors.green(d));
                             }
-                            next();
                         });
                     } else {
-                        next();
                     }
+                    next();
                 });
                 
             },function(){
