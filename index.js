@@ -218,8 +218,13 @@ module.exports = function (options) {
 
             //get dir name from file path
             var dirname=path.dirname(finalRemotePath);
-            //get parents of the target dir
 
+            //fix for win
+            if(/^win/.test(process.platform)){
+                dirname = dirname.replace(/\//g,'\\');
+            }
+
+            //get parents of the target dir
             var fileDirs = parents(dirname)
                 .map(function(d){return d.replace(/^\/~/,"~");})
                 .map(normalizePath);
@@ -246,7 +251,7 @@ module.exports = function (options) {
                 mkDirCache[d]=true;
                 //mdrake - TODO: use a default file permission instead of defaulting to 755
                 if(remotePlatform && remotePlatform.toLowerCase().indexOf('win')!==-1) {
-                    d = d.replace('/','\\');
+                    d = d.replace('/\//g','\\');
                 }
                 sftp.exists(d, function(exist) {
                     if (!exist) {
